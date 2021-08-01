@@ -1,3 +1,11 @@
+/*
+<javascriptresource>
+<name>Mark Layer</name>
+<category>Little Photoshop</category>
+<enableinfo>true</enableinfo>
+</javascriptresource>
+*/
+
 #include "./utils.jsx"
 
 var doc = app.activeDocument;
