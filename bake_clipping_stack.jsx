@@ -15,7 +15,6 @@ function main() {
     callScript("/lf_bake_to_normal.jsx");
 
     var layers = getClippingStackLayers(doc);
-    alert(layers);
     for (var i = 0; i < layers.length-1; i++) {
         layers[i].grouped = false;
     }
