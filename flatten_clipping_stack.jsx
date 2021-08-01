@@ -12,7 +12,7 @@ var doc = app.activeDocument;
 
 function main() {
     var layers = getClippingStackLayers(doc);
-    for (var i = 0; i < layers.length-1; i++) {
+    for (var i = layers.length - 2; i >= 0; i--) {
         layers[i].merge();
     }
 }
