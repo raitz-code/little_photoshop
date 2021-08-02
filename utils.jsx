@@ -16,20 +16,20 @@ function forEachLayer(doc, fun) {
     }
 }
 
-function isMarked(layer) {
-    return layer.name.slice(-2) == ' ^';
+function isMarked(layer, symbol) {
+    return layer.name.slice(-2) == ' ' + symbol;
 }
 
-function unmark(layer) {
+function unmark(layer, symbol) {
     var visible = layer.visible;
     layer.name = layer.name.slice(0, -2);
     layer.visible = visible;
 }
 
-function mark(layer) {
+function mark(layer, symbol) {
     if (!isMarked(layer)) {
         var visible = layer.visible;
-        layer.name = layer.name + ' ^';
+        layer.name = layer.name + ' ' + symbol;
         layer.visible = visible;
     }
 }

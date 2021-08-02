@@ -1,6 +1,6 @@
 /*
 <javascriptresource>
-<name>To Marked Layer</name>
+<name>Marked to Layer /</name>
 <category>Little Photoshop</category>
 <enableinfo>true</enableinfo>
 </javascriptresource>
@@ -16,12 +16,12 @@ function main() {
 
     for(var i = 0; i < allLayers.length; i++) {
         var layer = allLayers[i];
-        if (isMarked(layer)) {
+        if (isMarked(layer, '/')) {
             doc.activeLayer = layer;
             break;
         }
     }
 }
 
-doc.suspendHistory ("To Marked Layer", "main()");
+doc.suspendHistory ("Marked to Layer /", "main()");
 
