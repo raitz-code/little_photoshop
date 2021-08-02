@@ -241,3 +241,63 @@ function callScript(path) {
     //$.evalFile (Script2);
     //$.evalFile (Script3);
 }
+
+
+// Quick Mask
+
+function enableQuickMask(doc) {
+    var idsetd = charIDToTypeID( "setd" );
+    var desc14 = new ActionDescriptor();
+    var idnull = charIDToTypeID( "null" );
+    var ref1 = new ActionReference();
+    var idPrpr = charIDToTypeID( "Prpr" );
+    var idQucM = charIDToTypeID( "QucM" );
+    ref1.putProperty( idPrpr, idQucM );
+    var idDcmn = charIDToTypeID( "Dcmn" );
+    var idOrdn = charIDToTypeID( "Ordn" );
+    var idTrgt = charIDToTypeID( "Trgt" );
+    ref1.putEnumerated( idDcmn, idOrdn, idTrgt );
+    desc14.putReference( idnull, ref1 );
+    executeAction( idsetd, desc14, DialogModes.NO );
+}
+
+
+function disableQuickMask(doc) {
+    var idCler = charIDToTypeID( "Cler" );
+    var desc16 = new ActionDescriptor();
+    var idnull = charIDToTypeID( "null" );
+    var ref2 = new ActionReference();
+    var idPrpr = charIDToTypeID( "Prpr" );
+    var idQucM = charIDToTypeID( "QucM" );
+    ref2.putProperty( idPrpr, idQucM );
+    var idDcmn = charIDToTypeID( "Dcmn" );
+    var idOrdn = charIDToTypeID( "Ordn" );
+    var idTrgt = charIDToTypeID( "Trgt" );
+    ref2.putEnumerated( idDcmn, idOrdn, idTrgt );
+    desc16.putReference( idnull, ref2 );
+    executeAction( idCler, desc16, DialogModes.NO );
+}
+
+
+// Color
+
+// Depend on a custom action
+function fill(doc) {
+    var idPly = charIDToTypeID( "Ply " );
+    var desc20 = new ActionDescriptor();
+    var idnull = charIDToTypeID( "null" );
+    var ref3 = new ActionReference();
+    var idActn = charIDToTypeID( "Actn" );
+    ref3.putName( idActn, "Fill" );
+    var idASet = charIDToTypeID( "ASet" );
+    ref3.putName( idASet, "Paint Operation" );
+    desc20.putReference( idnull, ref3 );
+    executeAction( idPly, desc20, DialogModes.NO );
+}
+
+function swapForegroundBackgroundColor() {
+    var temp;
+    temp = app.foregroundColor;
+    app.foregroundColor = app.backgroundColor;
+    app.backgroundColor = temp;
+}
