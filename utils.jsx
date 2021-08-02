@@ -181,6 +181,26 @@ function makeActiveByID( id, visible ){
 };  
 
 
+function getLayerLabelColor(){
+    var ref = new ActionReference();
+    ref.putEnumerated( charIDToTypeID("Lyr "), charIDToTypeID("Ordn"), charIDToTypeID("Trgt") );
+    var appDesc = executeActionGet(ref);
+    return typeIDToStringID(appDesc.getEnumerationValue(stringIDToTypeID('color')) );
+};
+
+// "none","red","orange","yellowColor","grain","blue","violet","gray"
+function setLayerLabelColor(colorLabel) {
+    var target = new ActionDescriptor();
+    var ref1 = new ActionReference();
+    ref1.putEnumerated( charIDToTypeID('Lyr '), charIDToTypeID('Ordn'), charIDToTypeID('Trgt') );
+    target.putReference( charIDToTypeID('null'), ref1 );
+
+    var colorize = new ActionDescriptor();
+    colorize.putEnumerated( charIDToTypeID('Clr '), charIDToTypeID('Clr '), stringIDToTypeID(colorLabel) );
+    target.putObject( charIDToTypeID('T   '), charIDToTypeID('Lyr '), colorize );
+    executeAction( charIDToTypeID('setd'), target, DialogModes.NO );
+};
+
 // Clipping Stack
 
 function getClippingStackLayers(doc) {

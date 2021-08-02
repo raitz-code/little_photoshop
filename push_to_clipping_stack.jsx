@@ -12,9 +12,12 @@ var doc = app.activeDocument;
 
 function main() {
     var layers = getClippingStackLayers(doc);
+    var colorLabel = getLayerLabelColor();
     var newLayer = doc.artLayers.add();
     newLayer.moveBefore(layers[0]);
     newLayer.grouped = true;
+    alert(colorLabel);
+    setLayerLabelColor(colorLabel);
 }
 
 doc.suspendHistory ("Push to Clipping Stack Top", "main()");
