@@ -16,7 +16,6 @@ function main() {
     var newLayer = doc.artLayers.add();
     newLayer.moveBefore(layers[0]);
     newLayer.grouped = true;
-    alert(colorLabel);
     setLayerLabelColor(colorLabel);
 }
 
