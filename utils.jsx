@@ -115,7 +115,12 @@ function selectByID(id)
   var ref1 = new ActionReference();
   ref1.putIdentifier(charIDToTypeID('Lyr '), id);
   desc1.putReference(charIDToTypeID('null'), ref1);
-  executeAction(charIDToTypeID('slct'), desc1, DialogModes.NO);
+  try {
+    executeAction(charIDToTypeID('slct'), desc1, DialogModes.NO);
+  }
+  catch (e) {
+      alert('No Marked Layer');
+  }
 };
 
 function selectMultipleByIDs(ids) {
