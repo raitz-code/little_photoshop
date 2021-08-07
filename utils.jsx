@@ -16,23 +16,6 @@ function forEachLayer(doc, fun) {
     }
 }
 
-function isMarked(layer, symbol) {
-    return layer.name.slice(-2) == ' ' + symbol;
-}
-
-function unmark(layer, symbol) {
-    var visible = layer.visible;
-    layer.name = layer.name.slice(0, -2);
-    layer.visible = visible;
-}
-
-function mark(layer, symbol) {
-    if (!isMarked(layer)) {
-        var visible = layer.visible;
-        layer.name = layer.name + ' ' + symbol;
-        layer.visible = visible;
-    }
-}
 
 var collectAllLayers = function(doc) {
     var allLayers = [];
@@ -43,9 +26,82 @@ var collectAllLayers = function(doc) {
 };
 
 
+// Mark Layer
+
+function getMetadata(key) {
+    if (ExternalObject.AdobeXMPScript == undefined) {
+        ExternalObject.AdobeXMPScript = new ExternalObject("lib:AdobeXMPScript");     
+    }
+    var doc = app.activeDocument;
+    var xmp = new XMPMeta(doc.xmpMetadata.rawData);       
+    var value = xmp.getProperty(XMPConst.NS_XMP, key);  
+    return value;
+}
+
+function setMetadata(key, value) {
+    if (ExternalObject.AdobeXMPScript == undefined) {
+        ExternalObject.AdobeXMPScript = new ExternalObject("lib:AdobeXMPScript");     
+    }
+    var doc = app.activeDocument;
+    var xmp = new XMPMeta(doc.xmpMetadata.rawData);       
+    xmp.deleteProperty(XMPConst.NS_XMP, key);   
+    value = xmp.setProperty(XMPConst.NS_XMP, key, value);
+    doc.xmpMetadata.rawData = xmp.serialize();
+}
+
+function markedMetadataKey(symbol) {
+    switch (symbol) {
+        case '/':
+            return 'MarkedLayerSlash';
+        case '*':
+            return 'MarkedLayerAsterisk';
+        default:
+            throw 'Invalide Mark Symbol';
+    }
+}
+
+function isMarked(layer, symbol) {
+    var marked = getMetadata(MARKED_LAYER_ID_KEY);
+    return layer.id == marked;
+}
+
+function selectMarked(symbol) {
+    var marked = getMetadata(markedMetadataKey(symbol));
+    if (marked) {
+        selectByID(parseInt(marked));
+    }
+}
+
+function unmarkActive(symbol) {
+    var doc = app.activeDocument;
+    var layer = doc.activeLayer;
+    var visible = layer.visible; // Changing layer name always makes it visible... 
+    layer.name = layer.name.replace(' ' + symbol, '');
+    layer.visible = visible; // ... but we want it to keep original visibility.
+    if (getMetadata(markedMetadataKey(symbol)) == layer.id) {
+        setMetadata(markedMetadataKey(symbol), '');
+    }
+}
+
+function markActive(symbol) {
+    var doc = app.activeDocument;
+    var layer = doc.activeLayer;
+
+    selectMarked(symbol);
+    unmarkActive(symbol);
+    doc.activeLayer = layer;
+
+    var visible = layer.visible;  // Changing layer name always makes it visible... 
+    // Remove existing symbol first in case it's in the middle
+    layer.name = layer.name.replace(' ' + symbol, '') + ' ' + symbol;
+    layer.visible = visible;  // ... but we want it to keep original visibility.
+    setMetadata(markedMetadataKey(symbol), layer.id);
+}
+
+
 // Layer Selection
 
-function doesIdExists( id ){// function to check if the id exists
+function doeskExists( id ){// function to check if the id exists
    var res = true;
    var ref = new ActionReference();
    ref.putIdentifier(charIDToTypeID('Lyr '), id);
