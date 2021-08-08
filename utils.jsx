@@ -6,6 +6,8 @@
 </javascriptresource>
 */
 
+#include "./consts.jsx"
+
 function forEachLayer(doc, fun) {
     for (var m = 0; m < doc.layers.length; m++){
         var theLayer = doc.layers[m];
@@ -326,7 +328,7 @@ function callScript(path) {
 
 // Quick Mask
 
-function enableQuickMask(doc) {
+function enableQuickMask() {
     var idsetd = charIDToTypeID( "setd" );
     var desc14 = new ActionDescriptor();
     var idnull = charIDToTypeID( "null" );
@@ -343,7 +345,7 @@ function enableQuickMask(doc) {
 }
 
 
-function disableQuickMask(doc) {
+function disableQuickMask() {
     var idCler = charIDToTypeID( "Cler" );
     var desc16 = new ActionDescriptor();
     var idnull = charIDToTypeID( "null" );
@@ -362,18 +364,23 @@ function disableQuickMask(doc) {
 
 // Color
 
-// Depend on a custom action
-function fill(doc) {
-    var idPly = charIDToTypeID( "Ply " );
-    var desc20 = new ActionDescriptor();
-    var idnull = charIDToTypeID( "null" );
-    var ref3 = new ActionReference();
-    var idActn = charIDToTypeID( "Actn" );
-    ref3.putName( idActn, "Fill" );
-    var idASet = charIDToTypeID( "ASet" );
-    ref3.putName( idASet, "Paint Operation" );
-    desc20.putReference( idnull, ref3 );
-    executeAction( idPly, desc20, DialogModes.NO );
+function fill(with_color, opacity) {
+    opacity = (typeof opacity !== 'undefined') ?  opacity : 100.0
+
+    var idFl = charIDToTypeID( "Fl  " );
+    var desc490 = new ActionDescriptor();
+    var idUsng = charIDToTypeID( "Usng" );
+    var idFlCn = charIDToTypeID( "FlCn" );
+    var idBckC = charIDToTypeID( with_color );
+    desc490.putEnumerated( idUsng, idFlCn, idBckC );
+    var idOpct = charIDToTypeID( "Opct" );
+    var idPrc = charIDToTypeID( "#Prc" );
+    desc490.putUnitDouble( idOpct, idPrc, opacity );
+    var idMd = charIDToTypeID( "Md  " );
+    var idBlnM = charIDToTypeID( "BlnM" );
+    var idNrml = charIDToTypeID( "Nrml" );
+    desc490.putEnumerated( idMd, idBlnM, idNrml );
+    executeAction( idFl, desc490, DialogModes.NO )
 }
 
 function swapForegroundBackgroundColor() {
@@ -382,3 +389,174 @@ function swapForegroundBackgroundColor() {
     app.foregroundColor = app.backgroundColor;
     app.backgroundColor = temp;
 }
+
+
+// Layer
+
+function createLayer(name) {
+    var idMk = charIDToTypeID( "Mk  " );
+    var desc485 = new ActionDescriptor();
+    var idnull = charIDToTypeID( "null" );
+    var ref9 = new ActionReference();
+    var idLyr = charIDToTypeID( "Lyr " );
+    ref9.putClass( idLyr );
+    desc485.putReference( idnull, ref9 );
+    var idUsng = charIDToTypeID( "Usng" );
+    var desc486 = new ActionDescriptor();
+    var idNm = charIDToTypeID( "Nm  " );
+    desc486.putString( idNm, name);
+    executeAction( idMk, desc485, DialogModes.NO );
+}
+
+function createLayerViaCut() {
+    var idCtTL = charIDToTypeID( "CtTL" );
+    executeAction( idCtTL, undefined, DialogModes.NO );
+}
+
+function moveLayer(toward) {
+    var idmove = charIDToTypeID( "move" );
+    var desc494 = new ActionDescriptor();
+    var idnull = charIDToTypeID( "null" );
+    var ref10 = new ActionReference();
+    var idLyr = charIDToTypeID( "Lyr " );
+    var idOrdn = charIDToTypeID( "Ordn" );
+    var idTrgt = charIDToTypeID( "Trgt" );
+    ref10.putEnumerated( idLyr, idOrdn, idTrgt );
+    desc494.putReference( idnull, ref10 );
+    var idT = charIDToTypeID( "T   " );
+    var ref11 = new ActionReference();
+    var idLyr = charIDToTypeID( "Lyr " );
+    var idOrdn = charIDToTypeID( "Ordn" );
+    var idPrvs = charIDToTypeID( toward );
+    ref11.putEnumerated( idLyr, idOrdn, idPrvs );
+    desc494.putReference( idT, ref11 );
+    executeAction( idmove, desc494, DialogModes.NO );
+}
+
+function mergeDown() {
+    var idMrgtwo = charIDToTypeID( "Mrg2" );
+    var desc2655 = new ActionDescriptor();
+    executeAction( idMrgtwo, desc2655, DialogModes.NO );
+}
+
+function selectLayerRelative(direction) {
+    var idslct = charIDToTypeID( "slct" );
+    var desc480 = new ActionDescriptor();
+    var idnull = charIDToTypeID( "null" );
+    var ref8 = new ActionReference();
+    var idLyr = charIDToTypeID( "Lyr " );
+    var idOrdn = charIDToTypeID( "Ordn" );
+    var idBckw = charIDToTypeID( direction );
+    ref8.putEnumerated( idLyr, idOrdn, idBckw );
+    desc480.putReference( idnull, ref8 );
+    executeAction( idslct, desc480, DialogModes.NO );
+}
+
+
+// Transform
+
+function freeTransformDialog() {
+    var idTrnf = charIDToTypeID( "Trnf" );
+    var desc478 = new ActionDescriptor();
+    var idnull = charIDToTypeID( "null" );
+    var ref7 = new ActionReference();
+    var idLyr = charIDToTypeID( "Lyr " );
+    var idOrdn = charIDToTypeID( "Ordn" );
+    var idTrgt = charIDToTypeID( "Trgt" );
+    ref7.putEnumerated( idLyr, idOrdn, idTrgt );
+    desc478.putReference( idnull, ref7 );
+    executeAction( idTrnf, desc478, DialogModes.ALL );
+}
+
+
+// Selection
+
+function saveSelection(channel_name) {
+    var idDplc = charIDToTypeID( "Dplc" );
+    var desc2952 = new ActionDescriptor();
+    var idnull = charIDToTypeID( "null" );
+    var ref170 = new ActionReference();
+    var idChnl = charIDToTypeID( "Chnl" );
+    var idfsel = charIDToTypeID( "fsel" );
+    ref170.putProperty( idChnl, idfsel );
+    desc2952.putReference( idnull, ref170 );
+    var idNm = charIDToTypeID( "Nm  " );
+    desc2952.putString( idNm, channel_name);
+    executeAction( idDplc, desc2952, DialogModes.NO );
+}
+
+function loadSelection(channel_name) {
+    var idsetd = charIDToTypeID( "setd" );
+    var desc2965 = new ActionDescriptor();
+    var idnull = charIDToTypeID( "null" );
+    var ref172 = new ActionReference();
+    var idChnl = charIDToTypeID( "Chnl" );
+    var idfsel = charIDToTypeID( "fsel" );
+    ref172.putProperty( idChnl, idfsel );
+    desc2965.putReference( idnull, ref172 );
+    var idT = charIDToTypeID( "T   " );
+    var ref173 = new ActionReference();
+    var idChnl = charIDToTypeID( "Chnl" );
+    ref173.putName( idChnl, channel_name );
+    desc2965.putReference( idT, ref173 );
+    executeAction( idsetd, desc2965, DialogModes.NO );
+}
+
+function scaleSelection(factor) {
+    var idTrnf = charIDToTypeID( "Trnf" );
+    var desc2974 = new ActionDescriptor();
+    var idnull = charIDToTypeID( "null" );
+    var ref174 = new ActionReference();
+    var idChnl = charIDToTypeID( "Chnl" );
+    var idfsel = charIDToTypeID( "fsel" );
+    ref174.putProperty( idChnl, idfsel );
+    desc2974.putReference( idnull, ref174 );
+    var idWdth = charIDToTypeID( "Wdth" );
+    var idPrc = charIDToTypeID( "#Prc" );
+    desc2974.putUnitDouble( idWdth, idPrc, factor );
+    var idHght = charIDToTypeID( "Hght" );
+    var idPrc = charIDToTypeID( "#Prc" );
+    desc2974.putUnitDouble( idHght, idPrc, factor );
+    var idLnkd = charIDToTypeID( "Lnkd" );
+    desc2974.putBoolean( idLnkd, true );
+    executeAction( idTrnf, desc2974, DialogModes.NO );
+}
+
+function deselect() {
+    var idsetd = charIDToTypeID( "setd" );
+    var desc3181 = new ActionDescriptor();
+    var idnull = charIDToTypeID( "null" );
+    var ref179 = new ActionReference();
+    var idChnl = charIDToTypeID( "Chnl" );
+    var idfsel = charIDToTypeID( "fsel" );
+    ref179.putProperty( idChnl, idfsel );
+    desc3181.putReference( idnull, ref179 );
+    var idT = charIDToTypeID( "T   " );
+    var idOrdn = charIDToTypeID( "Ordn" );
+    var idNone = charIDToTypeID( "None" );
+    desc3181.putEnumerated( idT, idOrdn, idNone );
+    executeAction( idsetd, desc3181, DialogModes.NO );
+}
+
+function intersectSelectionWithLayerContent() {
+    var idIntr = charIDToTypeID( "Intr" );
+    var desc3350 = new ActionDescriptor();
+    var idnull = charIDToTypeID( "null" );
+    var ref182 = new ActionReference();
+    var idChnl = charIDToTypeID( "Chnl" );
+    var idChnl = charIDToTypeID( "Chnl" );
+    var idTrsp = charIDToTypeID( "Trsp" );
+    ref182.putEnumerated( idChnl, idChnl, idTrsp );
+    desc3350.putReference( idnull, ref182 );
+    var idWith = charIDToTypeID( "With" );
+    var ref183 = new ActionReference();
+    var idChnl = charIDToTypeID( "Chnl" );
+    var idfsel = charIDToTypeID( "fsel" );
+    ref183.putProperty( idChnl, idfsel );
+    desc3350.putReference( idWith, ref183 );
+    executeAction( idIntr, desc3350, DialogModes.NO )
+}
+
+
+// Filter
+
